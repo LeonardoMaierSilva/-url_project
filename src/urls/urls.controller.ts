@@ -1,47 +1,62 @@
 import {
   Controller,
-  Post,
   Get,
+  Post,
   Body,
   Param,
-  Delete,
   Patch,
-  UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { UrlsService } from './urls.service';
 import { CreateUrlDto } from './dto/create-url.dto';
 import { UpdateUrlDto } from './dto/update-url.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 
+@ApiTags('URLs')
 @Controller('urls')
 export class UrlsController {
   constructor(private readonly urlsService: UrlsService) {}
 
   @Post()
-  create(@Body() createUrlDto: CreateUrlDto) {
+  @ApiOperation({ summary: 'Criar uma URL encurtada' })
+  @ApiResponse({ status: 201, description: 'URL encurtada com sucesso' })
+  async create(@Body() createUrlDto: CreateUrlDto) {
     return this.urlsService.create(createUrlDto);
   }
 
   @Get(':shortUrl')
-  redirect(@Param('shortUrl') shortUrl: string) {
+  @ApiOperation({ summary: 'Redirecionar para a URL original' })
+  @ApiResponse({ status: 200, description: 'Redirecionamento bem-sucedido' })
+  async redirect(@Param('shortUrl') shortUrl: string) {
     return this.urlsService.redirect(shortUrl);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Listar todas as URLs encurtadas' })
+  @ApiResponse({ status: 200, description: 'Lista de URLs' })
+  async findAll() {
     return this.urlsService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateUrlDto: UpdateUrlDto) {
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Atualizar a URL original de uma URL encurtada' })
+  @ApiResponse({ status: 200, description: 'URL atualizada com sucesso' })
+  async update(@Param('id') id: number, @Body() updateUrlDto: UpdateUrlDto) {
     return this.urlsService.update(id, updateUrlDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: number) {
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Excluir uma URL encurtada' })
+  @ApiResponse({ status: 200, description: 'URL removida com sucesso' })
+  async remove(@Param('id') id: number) {
     return this.urlsService.remove(id);
   }
 }
