@@ -1,24 +1,20 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 
-@EntityRepository(User)
-export class UsersRepository extends Repository<User> {
-  async findUserById(id: number): Promise<User | null> {
-    return await this.findOne({ where: { id } });
+@Injectable()
+export class UsersRepository {
+  constructor(
+    @InjectRepository(User)
+    private readonly repository: Repository<User>,
+  ) {}
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.repository.findOne({ where: { email } });
   }
 
-  async createUser(userData: Partial<User>): Promise<User> {
-    const user = this.create(userData);
-    return await this.save(user);
-  }
-
-  async updateUser(id: number, userData: Partial<User>): Promise<User | null> {
-    await this.update(id, userData);
-    return this.findUserById(id);
-  }
-
-  async deleteUser(id: number): Promise<boolean> {
-    const result = await this.delete(id);
-    return result.affected ? true : false;
+  async saveUser(user: User): Promise<User> {
+    return this.repository.save(user);
   }
 }

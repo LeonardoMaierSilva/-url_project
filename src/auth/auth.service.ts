@@ -22,7 +22,7 @@ export class AuthService {
   ): Promise<{ message: string; user: User }> {
     const existingUser = await this.usersService.findByEmail(registerDto.email);
     if (existingUser) {
-      throw new ConflictException('Email already in use');
+      throw new ConflictException('Email ja esta sendo usado.');
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
@@ -33,7 +33,7 @@ export class AuthService {
     user.password = hashedPassword;
 
     const savedUser = await this.usersService.create(user);
-    return { message: 'User registered successfully', user: savedUser };
+    return { message: 'Usuario cadastrado com sucesso.', user: savedUser };
   }
 
   async login(loginDto: LoginDto): Promise<{ access_token: string }> {
