@@ -7,22 +7,22 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private readonly usersRepository: Repository<User>,
   ) {}
 
-  findAll(): Promise<User[]> {
+  async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
-  findOne(id: number): Promise<User> {
-    return this.usersRepository.findOne({ where: { id } });
+  async findOne(id: number): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { id } }) || null;
   }
 
-  create(user: User): Promise<User> {
+  async create(user: User): Promise<User> {
     return this.usersRepository.save(user);
   }
 
-  async update(id: number, user: Partial<User>): Promise<User> {
+  async update(id: number, user: Partial<User>): Promise<User | null> {
     await this.usersRepository.update(id, user);
     return this.findOne(id);
   }
