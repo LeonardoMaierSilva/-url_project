@@ -3,7 +3,7 @@ import { UrlsController } from './urls.controller';
 import { UrlsService } from './urls.service';
 import { CreateUrlDto } from './dto/create-url.dto';
 import { UpdateUrlDto } from './dto/update-url.dto';
-import { Url } from './entities/url.entity';
+import { Url } from './entities/urls.entity';
 
 describe('UrlsController', () => {
   let urlsController: UrlsController;
